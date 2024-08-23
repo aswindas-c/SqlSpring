@@ -1,4 +1,4 @@
-package com.SpringSql.SpringSql.IntegrationTest;
+package com.SpringSql.SpringSql.Integrationtest;
 
 import com.SpringSql.SpringSql.DTO.ChangeManagerRequest;
 import com.SpringSql.SpringSql.Model.EmployeeManager;
@@ -9,6 +9,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -20,6 +21,7 @@ import java.time.Instant;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@TestPropertySource(locations = "classpath:applicationtest.properties")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class IntegrationTest {
