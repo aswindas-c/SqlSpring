@@ -1,6 +1,7 @@
 package com.SpringSql.SpringSql.Repository;
 
 
+import java.time.Instant;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -12,16 +13,16 @@ public class EmployeeManagerSqlRepository {
     @Autowired
     private EmployeeManagerRepository empManRepo;
 
-    public List<EmployeeManager> findByManagerIdAndYearsOfExperienceGreaterThanEqual(Integer managerId, Integer yearsOfExperience) {
-        return empManRepo.findByManagerIdAndYearsOfExperienceGreaterThanEqual(managerId, yearsOfExperience);
+    public List<EmployeeManager> findByManagerIdAndDateOfJoiningBefore(Integer managerId, Instant minJoiningDate) {
+        return empManRepo.findByManagerIdAndDateOfJoiningBefore(managerId, minJoiningDate);
     }
 
     public List<EmployeeManager> findByManagerId(Integer managerId) {
         return empManRepo.findByManagerId(managerId);
     }
 
-    public List<EmployeeManager> findByYearsOfExperienceGreaterThanEqual(int yearsOfExperience) {
-        return empManRepo.findByYearsOfExperienceGreaterThanEqual(yearsOfExperience);
+    public List<EmployeeManager> findByDateOfJoiningBefore(Instant minJoiningDate) {
+        return empManRepo.findByDateOfJoiningBefore(minJoiningDate);
     }
 
     public List<EmployeeManager> findByDepartment(String department) {

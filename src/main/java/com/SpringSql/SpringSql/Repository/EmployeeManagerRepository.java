@@ -1,5 +1,6 @@
 package com.SpringSql.SpringSql.Repository;
 
+import java.time.Instant;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -10,11 +11,11 @@ import com.SpringSql.SpringSql.Model.EmployeeManager;
 @Repository
 public interface EmployeeManagerRepository extends JpaRepository<EmployeeManager, Integer>{
 
-    List<EmployeeManager> findByManagerIdAndYearsOfExperienceGreaterThanEqual(Integer managerId, Integer yearsOfExperience);
+    List<EmployeeManager> findByManagerIdAndDateOfJoiningBefore(Integer managerId, Instant minJoiningDate);
 
     List<EmployeeManager> findByManagerId(Integer managerId);
 
-    List<EmployeeManager> findByYearsOfExperienceGreaterThanEqual(int yearsOfExperience);
+    List<EmployeeManager> findByDateOfJoiningBefore(Instant minJoiningDate);
 
     @Query("SELECT e FROM EmployeeManager e WHERE e.department = :department AND e.managerId = 0")
     List<EmployeeManager> findByDepartment(@Param("department") String department);

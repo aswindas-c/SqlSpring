@@ -1,6 +1,6 @@
 package com.SpringSql.SpringSql.Model;
 
-import java.time.OffsetDateTime;
+import java.time.Instant;
 
 
 import jakarta.persistence.Entity;
@@ -10,9 +10,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-//@Document(collection = "trial")
+
 @Entity
-@Table(name = "employeeManager")
+//@Table(name = "employeeManager")
+@Table(name = "Test")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -35,12 +36,10 @@ public class EmployeeManager {
 
     private Integer managerId;
 
-    private OffsetDateTime dateOfJoining;
+    private Instant dateOfJoining;
 
-    private OffsetDateTime createdTime;
+    private Instant createdTime;
 
-    private OffsetDateTime updatedTime;
-
-    private Integer yearsOfExperience;
+    private Instant updatedTime;
 
 }

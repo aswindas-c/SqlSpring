@@ -8,9 +8,8 @@ import com.SpringSql.SpringSql.DTO.Response;
 import com.SpringSql.SpringSql.Model.EmployeeManager;
 import com.SpringSql.SpringSql.Repository.EmployeeManagerSqlRepository;
 
-import java.time.LocalDate;
+import java.time.Instant;
 import java.time.OffsetDateTime;
-import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -51,11 +50,9 @@ public class EmployeeService {
         }
 
         // Set created time and updated time to the current time
-        OffsetDateTime currentTime = OffsetDateTime.now();
+        Instant currentTime = Instant.now();
         employee.setCreatedTime(currentTime);
         employee.setUpdatedTime(currentTime);
-
-        calculateYearsOfExperience(employee);
 
         // Handle special case for Account Manager
         if ("Account Manager".equalsIgnoreCase(employee.getDesignation())) {
@@ -111,7 +108,7 @@ public class EmployeeService {
                 !"QA".equalsIgnoreCase(department) &&
                 !"engineering".equalsIgnoreCase(department) &&
                 !"BA".equalsIgnoreCase(department)) {
-            errors.add("Invalid department. Must be one of: sales, delivery, QA, engineering, BA.");
+            errors.add("Invalid department. Must be one of: sales,delivery,QA,engineering,BA.");
         }
      
         if (!isValidEmail(email)) {
@@ -127,24 +124,30 @@ public class EmployeeService {
         }
     }
 
-    private void calculateYearsOfExperience(EmployeeManager employee) {
-        if (employee.getDateOfJoining() != null) {
-            LocalDate joiningDate = employee.getDateOfJoining().toLocalDate();
-            LocalDate currentDate = LocalDate.now();
-            employee.setYearsOfExperience(Period.between(joiningDate, currentDate).getYears());
-        }
+    private Instant dateConverter(String yearOfExperience) {
+        return OffsetDateTime.now().minusYears(Long.parseLong(yearOfExperience)).toInstant();
     }
 
     public List<ManagerResponse> getEmployee(Integer managerId, Integer yearsOfExperience) {
         List<EmployeeManager> employees;
 
-        if (managerId != null && yearsOfExperience != null) {
-            employees = employeeSqlRepo.findByManagerIdAndYearsOfExperienceGreaterThanEqual(managerId, yearsOfExperience);
-        } else if (managerId != null) {
+        if (managerId != null && yearsOfExperience != null) 
+        {
+            Instant minJoiningDate =  dateConverter(yearsOfExperience.toString());
+            employees = employeeSqlRepo.findByManagerIdAndDateOfJoiningBefore(managerId, minJoiningDate);
+        } 
+        else if (managerId != null) 
+        {
             employees = employeeSqlRepo.findByManagerId(managerId);
-        } else if (yearsOfExperience != null) {
-            employees = employeeSqlRepo.findByYearsOfExperienceGreaterThanEqual(yearsOfExperience);
-        } else {
+        } 
+        else if (yearsOfExperience != null) 
+        {
+            
+            Instant minJoiningDate =  dateConverter(yearsOfExperience.toString());
+            employees = employeeSqlRepo.findByDateOfJoiningBefore(minJoiningDate);
+        } 
+        else 
+        {
             employees = employeeSqlRepo.findAll();
         }
 
@@ -186,6 +189,11 @@ public class EmployeeService {
             throw new NoSuchElementException("Employee with ID " + employeeId + " not found.");
         }
     
+        if (employee.getManagerId() == 0) {
+            throw new IllegalStateException("Employee is a manager cannot be changed");
+        }
+
+        
         if (employee.getManagerId().equals(newManagerId)) {
             throw new IllegalStateException("Employee is currently under the given manager. No changes required.");
         }
@@ -206,7 +214,7 @@ public class EmployeeService {
 
         // Update the employee manager ID and updatedTime
         employee.setManagerId(newManagerId);
-        employee.setUpdatedTime(OffsetDateTime.now());
+        employee.setUpdatedTime(Instant.now());
         employeeSqlRepo.save(employee);
     
         return new Response(
