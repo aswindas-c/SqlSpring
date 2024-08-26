@@ -21,7 +21,7 @@ import java.time.Instant;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-//@TestPropertySource(locations = "classpath:applicationtest.properties")
+@TestPropertySource(locations = "classpath:application-test.properties")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class IntegrationTest {
